@@ -1,0 +1,279 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row g-5">
+
+        <!-- LEFT SIDE: Checkout Form -->
+        <div class="col-md-7 col-lg-7 order-md-1">
+            <h2 class="mb-4 d-flex justify-content-between align-items-center">
+                Checkout
+                <a href="{% url 'store:login' %}" class="small text-muted text-decoration-none">Sign in</a>
+            </h2>
+
+            <form method="post" id="checkoutForm">
+                {% csrf_token %}
+
+                <!-- Contact -->
+                <h4 class="mb-3 fw-bold">Contact</h4>
+                <div class="mb-4">
+                    <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="Email" required style="border-radius: 4px;">
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" value="" id="news_offers" checked>
+                        <label class="form-check-label small" for="news_offers">
+                            Email me with news and offers
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Delivery -->
+                <h4 class="mb-3 fw-bold">Delivery</h4>
+                <div class="mb-4">
+                    <div class="mb-3">
+                        <label for="country" class="form-label visually-hidden">Country/Region</label>
+                        <select class="form-select form-control-lg" id="country" name="country" required style="border-radius: 4px;">
+                            <option value="Cambodia" selected>Country/Region: Cambodia</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="Vietnam">Vietnam</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" id="first_name" name="first_name" placeholder="First name" required style="border-radius: 4px;">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" id="instagram" name="instagram" placeholder="Instagram @" style="border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-lg" id="address" name="address" placeholder="Address" required style="border-radius: 4px;">
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" id="city" name="city" placeholder="City" required style="border-radius: 4px;">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg" id="postal_code" name="postal_code" placeholder="Postal code (optional)" style="border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="tel" class="form-control form-control-lg" id="phone" name="phone" placeholder="Phone" required style="border-radius: 4px;">
+                    </div>
+
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" value="" id="save_info">
+                        <label class="form-check-label small" for="save_info">
+                            Save this information for next time
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Shipping -->
+                <h4 class="mb-3 fw-bold">Shipping method</h4>
+                <div class="mb-4 p-3 border rounded" style="border-radius: 4px; background-color: #f8f9fa;">
+                    <div class="form-check d-flex justify-content-between">
+                        <div>
+                            <input class="form-check-input" type="radio" name="shipping_method" id="local_delivery" value="local_delivery" checked>
+                            <label class="form-check-label fw-semibold" for="local_delivery">
+                                Local Delivery (2-3 Days)
+                            </label>
+                            <div class="small text-muted">
+                                ដឹកជញ្ជូនក្នុងតំបន់ (Phnom Penh Only)
+                            </div>
+                        </div>
+                        <span class="fw-semibold">$2.00</span>
+                    </div>
+                </div>
+
+                <!-- Payment -->
+                <h4 class="mb-3 fw-bold">Payment</h4>
+                <p class="small text-muted">All transactions are secure and encrypted.</p>
+
+                <div class="mb-4">
+
+                    <!-- ABA PayWay -->
+                    <div class="p-3 border rounded mb-2 payment-option" data-target="#aba_payway_details">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="aba_payway" value="aba_payway" checked>
+                            <label class="form-check-label fw-semibold d-flex justify-content-between align-items-center" for="aba_payway">
+                                <span>Pay with ABA PayWay</span>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-danger me-1">VISA</span>
+                                    <span class="badge bg-warning me-1 text-dark">Mastercard</span>
+                                    <span class="badge bg-dark">+3</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div id="aba_payway_details" class="payment-details mt-3 pt-3 border-top">
+                            <p class="small text-muted text-center">Select ABA PayWay to scan QR code and complete payment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Credit Card -->
+                    <div class="p-3 border rounded mb-2 payment-option" data-target="#credit_card_details">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="credit_card" value="credit_card">
+                            <label class="form-check-label fw-semibold d-flex justify-content-between align-items-center" for="credit_card">
+                                <span>Credit/Debit Card</span>
+                                <div>
+                                    <i class="bi bi-credit-card-fill text-muted me-1"></i> VISA / MC / Amex
+                                </div>
+                            </label>
+                        </div>
+                        <div id="credit_card_details" class="row g-3 mt-2 pt-2 border-top d-none payment-details">
+                            <div class="col-12">
+                                <input type="text" class="form-control" placeholder="Card number">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Name on card">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" placeholder="MM/YY">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" placeholder="CVC">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PayPal -->
+                    <div class="p-3 border rounded mb-2 payment-option" data-target="#paypal_details">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal">
+                            <label class="form-check-label fw-semibold d-flex justify-content-between align-items-center" for="paypal">
+                                <span>Pay with PayPal</span>
+                                <i class="bi bi-paypal text-primary fs-4"></i>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- COD -->
+                    <div class="p-3 border rounded payment-option" data-target="#cod_details">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod">
+                            <label class="form-check-label fw-semibold" for="cod">
+                                Cash on Delivery (COD)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Address -->
+                <h4 class="mb-3 fw-bold">Billing address</h4>
+                <div class="mb-4">
+                    <div class="p-3 border rounded mb-2 bg-light billing-option" data-target="#billing_same">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="billing_address" id="same_as_shipping" value="same" checked>
+                            <label class="form-check-label fw-semibold" for="same_as_shipping">
+                                Same as shipping address
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-3 border rounded billing-option" data-target="#billing_different">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="billing_address" id="different_billing" value="different">
+                            <label class="form-check-label fw-semibold" for="different_billing">
+                                Use a different billing address
+                            </label>
+                        </div>
+                        <div id="billing_different_fields" class="mt-3 pt-3 border-top d-none">
+                            <p class="small text-muted">Enter billing address:</p>
+                            <input type="text" class="form-control form-control-sm mb-2" placeholder="Address Line 1">
+                            <input type="text" class="form-control form-control-sm mb-2" placeholder="City">
+                            <input type="text" class="form-control form-control-sm" placeholder="Postal Code">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">Pay now</button>
+            </form>
+        </div>
+
+        <!-- RIGHT SIDE: Order Summary -->
+        <div class="col-md-5 col-lg-5 order-md-2 sticky-top" style="top: 20px;">
+            <div class="p-4 rounded" style="background-color: #f8f9fa;">
+                {% for product in products %}
+                <div class="d-flex mb-3 align-items-center">
+                    <span class="badge bg-dark rounded-circle me-3" style="font-size: 0.75rem; padding: 0.35em 0.65em;">{{ product.quantity }}</span>
+
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail me-3" style="width: 50px; height: 50px;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/50" alt="No image" class="img-thumbnail me-3">
+                    {% endif %}
+
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">{{ product.name }}</h6>
+                        <small class="text-muted">Size/Color</small>
+                    </div>
+                    <span class="fw-semibold">${{ product.price|floatformat:2 }}</span>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted">Your cart is empty.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ABA QR Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title" id="qrModalLabel">Scan ABA QR Code</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="{% static 'images/IMG_2389.JPG' %}" alt="ABA QR Code" class="img-fluid" style="max-width: 300px;">
+        <p class="mt-2 small text-muted">Open your ABA app and scan this QR code to pay.</p>
+        <p class="small text-danger" id="countdown">QR expires in 2:00</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkoutForm = document.getElementById('checkoutForm');
+    const qrModalEl = document.getElementById('qrModal');
+    const qrModal = new bootstrap.Modal(qrModalEl);
+    const countdownEl = document.getElementById('countdown');
+
+    checkoutForm.addEventListener('submit', function(e) {
+        const abaSelected = document.getElementById('aba_payway').checked;
+
+        if (abaSelected) {
+            e.preventDefault(); // prevent normal submission
+            qrModal.show();
+
+            // Countdown 2 minutes
+            let timeLeft = 120;
+            countdownEl.textContent = `QR expires in 2:00`;
+            const timer = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownEl.textContent = `QR expires in ${minutes}:${seconds.toString().padStart(2,'0')}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    qrModal.hide();
+                    alert('QR code expired. Please try again.');
+                }
+            }, 1000);
+
+        } else {
+            // Other payment methods submit normally
+        }
+    });
+});
+</script>
+
+{% endblock %}
